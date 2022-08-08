@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+const Package = "httpresponse"
+
 type Response struct {
 	Status int
 	Header http.Header
