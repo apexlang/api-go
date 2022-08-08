@@ -11,6 +11,8 @@ import (
 	"github.com/apexlang/api-go/errorz"
 )
 
+const Package = "tgrpc"
+
 type RegisterFn func(server grpc.ServiceRegistrar)
 
 func Register(registrar grpc.ServiceRegistrar, services ...RegisterFn) {

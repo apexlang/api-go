@@ -6,6 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+const Package = "tfiber"
+
 type RegisterFn func(router fiber.Router)
 
 func Register(router fiber.Router, services ...RegisterFn) {

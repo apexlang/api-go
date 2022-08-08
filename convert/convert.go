@@ -1,5 +1,7 @@
 package convert
 
+const Package = "Convert"
+
 //go:inline
 func Ptr[T any](value T) *T {
 	return &value
