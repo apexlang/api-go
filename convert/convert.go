@@ -2,6 +2,8 @@ package convert
 
 import (
 	"fmt"
+
+	"github.com/apexlang/api-go/errorz"
 )
 
 const Package = "Convert"
@@ -28,6 +30,18 @@ func NillableErr[S, D any](value *S, parse func(S) (D, error)) (*D, error) {
 		return nil, err
 	}
 	return &ret, nil
+}
+
+func NillableEt[S, D any](e *errorz.Tracker, value *S, parse func(S) (D, error)) *D {
+	if value == nil {
+		return nil
+	}
+	ret, err := parse(*value)
+	if err != nil {
+		e.Append(err)
+		return nil
+	}
+	return &ret
 }
 
 func StringPtr[S fmt.Stringer](value *S) *string {
@@ -64,6 +78,22 @@ func SliceErr[S, D any](src []S, convert func(S) (D, error)) ([]D, error) {
 	return dst, nil
 }
 
+func SliceEt[S, D any](e *errorz.Tracker, src []S, convert func(S) (D, error)) []D {
+	if src == nil {
+		return nil
+	}
+	dst := make([]D, len(src))
+	for k, s := range src {
+		var err error
+		dst[k], err = convert(s)
+		if err != nil {
+			e.Append(err)
+			return nil
+		}
+	}
+	return dst
+}
+
 func SlicePtr[S, D any](src []S, convert func(*S) D) []D {
 	if src == nil {
 		return nil
@@ -88,6 +118,22 @@ func SlicePtrErr[S, D any](src []S, convert func(*S) (D, error)) ([]D, error) {
 		}
 	}
 	return dst, nil
+}
+
+func SlicePtrRt[S, D any](e *errorz.Tracker, src []S, convert func(*S) (D, error)) []D {
+	if src == nil {
+		return nil
+	}
+	dst := make([]D, len(src))
+	for k, s := range src {
+		var err error
+		dst[k], err = convert(&s)
+		if err != nil {
+			e.Append(err)
+			return nil
+		}
+	}
+	return dst
 }
 
 func SliceRef[S, D any](src []S, convert func(S) *D) []D {
@@ -116,6 +162,22 @@ func SliceRefErr[S, D any](src []S, convert func(S) (*D, error)) ([]D, error) {
 	return dst, nil
 }
 
+func SliceRefEt[S, D any](e *errorz.Tracker, src []S, convert func(S) (*D, error)) []D {
+	if src == nil {
+		return nil
+	}
+	dst := make([]D, len(src))
+	for k, s := range src {
+		val, err := convert(s)
+		if err != nil {
+			e.Append(err)
+			return nil
+		}
+		dst[k] = *val
+	}
+	return dst
+}
+
 func Map[K comparable, S, D any](src map[K]S, convert func(S) D) map[K]D {
 	if src == nil {
 		return nil
@@ -140,6 +202,22 @@ func MapErr[K comparable, S, D any](src map[K]S, convert func(S) (D, error)) (ma
 		}
 	}
 	return dst, nil
+}
+
+func MapEt[K comparable, S, D any](e *errorz.Tracker, src map[K]S, convert func(S) (D, error)) map[K]D {
+	if src == nil {
+		return nil
+	}
+	dst := make(map[K]D, len(src))
+	for k, s := range src {
+		var err error
+		dst[k], err = convert(s)
+		if err != nil {
+			e.Append(err)
+			return nil
+		}
+	}
+	return dst
 }
 
 func MapRef[K comparable, S, D any](src map[K]S, convert func(S) *D) map[K]D {
@@ -168,6 +246,22 @@ func MapRefErr[K comparable, S, D any](src map[K]S, convert func(S) (*D, error))
 	return dst, nil
 }
 
+func MapRefEt[K comparable, S, D any](e *errorz.Tracker, src map[K]S, convert func(S) (*D, error)) map[K]D {
+	if src == nil {
+		return nil
+	}
+	dst := make(map[K]D, len(src))
+	for k, s := range src {
+		val, err := convert(s)
+		if err != nil {
+			e.Append(err)
+			return nil
+		}
+		dst[k] = *val
+	}
+	return dst
+}
+
 func MapPtr[K comparable, S, D any](src map[K]S, convert func(*S) D) map[K]D {
 	if src == nil {
 		return nil
@@ -192,4 +286,20 @@ func MapPtrErr[K comparable, S, D any](src map[K]S, convert func(*S) (D, error))
 		}
 	}
 	return dst, nil
+}
+
+func MapPtrEt[K comparable, S, D any](e *errorz.Tracker, src map[K]S, convert func(*S) (D, error)) map[K]D {
+	if src == nil {
+		return nil
+	}
+	dst := make(map[K]D, len(src))
+	for k, s := range src {
+		var err error
+		dst[k], err = convert(&s)
+		if err != nil {
+			e.Append(err)
+			return nil
+		}
+	}
+	return dst
 }

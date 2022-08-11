@@ -23,6 +23,12 @@ type ErrorGroup interface {
 
 type Errors []error
 
+func (e *Tracker) Append(err error) {
+	if err != nil {
+		e.errz = multierr.Append(e.errz, err)
+	}
+}
+
 func (e *Tracker) Errors() Errors {
 	if e.errz == nil {
 		return nil
