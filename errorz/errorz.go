@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+const Package = "errorz"
+
 type Error struct {
 	// Type is a textual type for the error.
 	Type string `json:"type,omitempty" yaml:"type,omitempty" msgpack:"type,omitempty"`
