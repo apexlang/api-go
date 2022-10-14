@@ -129,6 +129,13 @@ const (
 	Unauthenticated ErrCode = 16
 )
 
+func FromStatus(status int) ErrCode {
+	if code, ok := statusLookup[status]; ok {
+		return code
+	}
+	return Internal
+}
+
 // String returns the string representation of c.
 func (c ErrCode) String() string {
 	if int(c) >= numCodeNames {
@@ -217,6 +224,22 @@ var codeNames = [...]string{
 	Unavailable:        "unavailable",
 	DataLoss:           "data_loss",
 	Unauthenticated:    "unauthenticated",
+}
+
+var statusLookup = map[int]ErrCode{
+	200: OK,
+	201: OK,
+	400: InvalidArgument,
+	401: Unauthenticated,
+	403: PermissionDenied,
+	404: NotFound,
+	409: AlreadyExists,
+	429: ResourceExhausted,
+	499: Canceled,
+	500: Internal,
+	501: Unimplemented,
+	503: Unavailable,
+	504: DeadlineExceeded,
 }
 
 var numCodeStatus = len(codeStatus)

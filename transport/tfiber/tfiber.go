@@ -10,6 +10,15 @@ const Package = "tfiber"
 
 type RegisterFn func(router fiber.Router)
 
+func ErrorHandler(c *fiber.Ctx, err error) error {
+	if e, ok := err.(*fiber.Error); ok {
+		errz := errorz.New(errorz.FromStatus(e.Code), e.Message)
+		return c.Status(e.Code).JSON(errz)
+	}
+	errz := errorz.From(err)
+	return c.Status(errz.Status).JSON(errz)
+}
+
 func Register(router fiber.Router, services ...RegisterFn) {
 	for _, s := range services {
 		s(router)
