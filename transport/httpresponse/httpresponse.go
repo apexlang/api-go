@@ -27,5 +27,6 @@ func NewContext(ctx context.Context, resp *Response) context.Context {
 }
 
 func FromContext(ctx context.Context) *Response {
-	return ctx.Value(responseKey{}).(*Response)
+	resp, _ := ctx.Value(responseKey{}).(*Response)
+	return resp
 }
